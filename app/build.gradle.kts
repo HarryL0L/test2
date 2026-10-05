@@ -17,8 +17,21 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Signed with the debug key so CI-built APKs can be sideloaded directly.
+            // Configure a real signing key before publishing to a store.
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+    splits {
+        // ONNX Runtime ships ~30 MB of native code per ABI, so build one APK per CPU type.
+        abi {
+            isEnable = true
+            reset()
+            include("arm64-v8a", "armeabi-v7a", "x86_64")
+            isUniversalApk = false
         }
     }
     compileOptions {

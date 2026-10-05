@@ -25,18 +25,30 @@ Requires Android 8.0 (API 26) or newer.
 
 ### GitHub Actions
 
-Every push builds a debug APK via `.github/workflows/android.yml`. Download it from the
-workflow run's **Artifacts** (`guard-gallery-debug-apk`). Pushing a `v*` tag also attaches the APK
-to a GitHub release.
+Every push builds the APKs via `.github/workflows/android.yml`. Download them from the workflow
+run's **Artifacts** (`guard-gallery-apks`). Pushing a `v*` tag also attaches them to a GitHub
+release.
+
+One APK is built per CPU architecture (ONNX Runtime's native code is large):
+
+| APK | Devices |
+| --- | --- |
+| `app-arm64-v8a-release.apk` | Almost all modern phones — pick this one |
+| `app-armeabi-v7a-release.apk` | Older 32-bit phones |
+| `app-x86_64-release.apk` | Emulators / Chromebooks |
+
+The release build is minified and signed with the standard debug key so it can be sideloaded.
+Set up your own signing key before distributing it anywhere.
 
 ### Locally
 
 ```sh
-./gradlew assembleDebug
-# APK: app/build/outputs/apk/debug/app-debug.apk
+./gradlew assembleRelease
+# APKs: app/build/outputs/apk/release/
 ```
 
-Needs JDK 17+ and the Android SDK (platform 36).
+Needs JDK 17+ and the Android SDK (compile SDK 37). Built with Gradle 9.8, AGP 9.4, Kotlin 2.4,
+Compose BOM 2026.09 (Material 3).
 
 ## Project layout
 
